@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public void HitCallback(List<Enemy> _hitList)
+    public void HitCallback(List<IPoolingObject> _hitList)
     {
-        enemyManager.RespawnEnemy(_hitList);
+        //enemyManager.RespawnEnemy(_hitList);
+        enemyManager.SetDamages(_hitList);
 
         killedEnemyCount += _hitList.Count;
 
@@ -35,10 +36,15 @@ public class GameManager : MonoBehaviour
         inputMouse = InputMouse.Instance;
     }
 
+    private void Start()
+    {
+        enemyManager.Init(tower.gameObject);
+    }
 
 
     [SerializeField]
     private EnemyManager enemyManager = null;
+    // mng, mgr·Îµµ ¾¸
 
     private int killedEnemyCount = 0;
 

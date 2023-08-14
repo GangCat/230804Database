@@ -4,4 +4,4 @@ delegate void VoidvoidDelegate();
 delegate int IntvoidDelegate();
 delegate int IntIntDelegate(int _value);
 
-public delegate void voidListEnemyDelegate(List<Enemy> _enemyList);
+public delegate void voidListPoolingObjectDelegate(List<IPoolingObject> _enemyList);

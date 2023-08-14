@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Missile : MonoBehaviour
 {
-    public void Init(Vector3 _spawnPos, Quaternion _spawnRot, Vector3 _targetPos, voidListEnemyDelegate _hitEnemyListCallback = null)
+    public void Init(Vector3 _spawnPos, Quaternion _spawnRot, Vector3 _targetPos, voidListPoolingObjectDelegate _hitEnemyListCallback = null)
     {
         targetPos = _targetPos;
         targetPos.y = transform.position.y;
@@ -52,5 +52,5 @@ public class Missile : MonoBehaviour
 
     private Explosion explosion = null;
 
-    private voidListEnemyDelegate hitEnemyListCallback = null;
+    private voidListPoolingObjectDelegate hitEnemyListCallback = null;
 }

@@ -6,7 +6,7 @@ public class Explosion : MonoBehaviour
 {
     public delegate void FinishCallback();
 
-    public void Activate(FinishCallback _finishCallback = null, voidListEnemyDelegate _hitEnemyListCallback = null) // default parameter
+    public void Activate(FinishCallback _finishCallback = null, voidListPoolingObjectDelegate _hitEnemyListCallback = null) // default parameter
     {
         if (isActivate) return;
 
@@ -18,7 +18,7 @@ public class Explosion : MonoBehaviour
         maxScale = 10f;
     }
 
-    private IEnumerator ActivateCoroutine(FinishCallback _finishCallback, voidListEnemyDelegate _hitEnemyListCallback)
+    private IEnumerator ActivateCoroutine(FinishCallback _finishCallback, voidListPoolingObjectDelegate _hitEnemyListCallback)
     {
         transform.localScale = Vector3.zero;
         float t = 0f;
@@ -37,13 +37,13 @@ public class Explosion : MonoBehaviour
 
         if (hits.Length > 0)
         {
-            List<Enemy> hitList = new List<Enemy>();
+            List<IPoolingObject> hitList = new List<IPoolingObject>();
             foreach (RaycastHit hit in hits)
             {
                 if (hit.transform.CompareTag("Enemy"))
                 {
                     //Debug.Log(hit.transform.name);
-                    hitList.Add(hit.transform.GetComponent<Enemy>());
+                    hitList.Add(hit.transform.GetComponent<IPoolingObject>());
                 }
             }
             _hitEnemyListCallback?.Invoke(hitList);

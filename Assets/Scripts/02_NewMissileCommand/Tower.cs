@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
-    public void Attack(Vector3 _targetPos, voidListEnemyDelegate _hitCallback = null)
+    public void Attack(Vector3 _targetPos, voidListPoolingObjectDelegate _hitCallback = null)
     {
         if (attackCo != null)
             StopCoroutine(attackCo);
@@ -35,7 +35,7 @@ public class Tower : MonoBehaviour
             StopCoroutine("AttackCoroutine");
     }
 
-    private IEnumerator AttackCoroutine(Vector3 _targetPos, voidListEnemyDelegate _hitCallback)
+    private IEnumerator AttackCoroutine(Vector3 _targetPos, voidListPoolingObjectDelegate _hitCallback)
     {
         float towerAngle = CalcAngleToTarget(transform.position, transform.forward);
 
