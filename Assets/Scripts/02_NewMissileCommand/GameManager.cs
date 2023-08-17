@@ -6,11 +6,12 @@ public class GameManager : MonoBehaviour
 {
     public void HitCallback(List<IPoolingObject> _hitList)
     {
-        enemyMng.SetDamages(_hitList);
+        enemyMgr.SetDamages(_hitList);
 
         killCnt += _hitList.Count;
 
-        uiHudKillCount.SetKillCount(killCnt);
+        uiMgr.UIHUDUpdateKillCount(killCnt);
+        //uiHudKillCount.SetKillCount(killCnt);
     }
 
     private void EnemyAttackCallback(int _dmg = 1)
@@ -18,7 +19,8 @@ public class GameManager : MonoBehaviour
         int curHp = tower.Damage(_dmg);
         if (curHp < 0) return;
 
-        uiHudHp.UpdateHp(curHp);
+        uiMgr.UIHUDUpdateHp(curHp);
+        //uiHudHp.UpdateHp(curHp);
         if (curHp == 0)
         {
             Debug.Log("GameOver");
@@ -28,7 +30,8 @@ public class GameManager : MonoBehaviour
 
     private void MissileStateCallback(int _missileIdx, bool _isFill)
     {
-        uiHudMissile.UpdateMissileStateWithIndex(_missileIdx, _isFill);
+        uiMgr.UIHUDUpdateMissileStateWithIndex(_missileIdx, _isFill);
+        //uiHudMissile.UpdateMissileStateWithIndex(_missileIdx, _isFill);
     }
 
     private void Update()
@@ -55,11 +58,14 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         tower.Init(MissileStateCallback);
-        enemyMng.Init(tower.gameObject, EnemyAttackCallback);
+        enemyMgr.Init(tower.gameObject, EnemyAttackCallback);
 
-        uiHudHp.Init(tower.MaxHp);
-        uiHudMissile.Init(tower.MaxMissileCount);
-        uiHudKillCount.SetKillCount(killCnt);
+        uiMgr.UIHUDInitHP(tower.MaxHp);
+        //uiHudHp.Init(tower.MaxHp);
+        uiMgr.UIHUDInitMissile(tower.MaxMissileCount);
+        //uiHudMissile.Init(tower.MaxMissileCount);
+        uiMgr.UIHUDInitKillCount();
+        //uiHudKillCount.SetKillCount(killCnt);
 
         StartCoroutine("TimerCoroutine");
     }
@@ -68,7 +74,8 @@ public class GameManager : MonoBehaviour
     {
         while (true)
         {
-            uiHudTimer.SetTime(timeSec);
+            uiMgr.UIHUDUpdateTimer(timeSec);
+            //uiHudTimer.SetTime(timeSec);
             yield return new WaitForSeconds(1f);
             ++timeSec;
         }
@@ -76,16 +83,19 @@ public class GameManager : MonoBehaviour
 
 
     [SerializeField]
-    private EnemyManager enemyMng = null;
+    private EnemyManager enemyMgr = null;
+    [SerializeField]
+    private UIManager uiMgr = null;
+    
 
-    [SerializeField]
-    private UI_HUD_HP uiHudHp = null;
-    [SerializeField]
-    private UI_HUD_Missile uiHudMissile = null;
-    [SerializeField]
-    private UI_HUD_KillCount uiHudKillCount = null;
-    [SerializeField]
-    private UI_HUD_Timer uiHudTimer = null;
+    //[SerializeField]
+    //private UI_HUD_HP uiHudHp = null;
+    //[SerializeField]
+    //private UI_HUD_Missile uiHudMissile = null;
+    //[SerializeField]
+    //private UI_HUD_KillCount uiHudKillCount = null;
+    //[SerializeField]
+    //private UI_HUD_Timer uiHudTimer = null;
 
     private int killCnt = 0;
     private int timeSec = 0;
