@@ -9,13 +9,13 @@ public class Enemy : MonoBehaviour, IPoolingObject
         target = _target;
     }
 
-    public void AddPatterns(/*EP_EnemyPatternBase _movePattern, EP_EnemyPatternBase _rotPattern*/)
+    public void AddPatterns()
     {
         gameObject.AddComponent<EP_MoveAround>();
         gameObject.AddComponent<EP_RotateToTarget>();
     }
 
-    public void Init(GameObject _target)
+    public void Init(GameObject _target, AttackDelegate _attackCallback = null)
     {
         gameObject.SetActive(true);
 
@@ -26,6 +26,8 @@ public class Enemy : MonoBehaviour, IPoolingObject
             pattern.Init(target);
 
         nonAnchorPos = transform.position;
+
+        attackCallback = _attackCallback;
     }
 
     public void Release()
@@ -64,9 +66,10 @@ public class Enemy : MonoBehaviour, IPoolingObject
         targetPos = target.transform.position;
 
         if (Utility.DistanceWIthoutYAxis(myPos, targetPos) < 1f)
+        {
+            attackCallback?.Invoke(1);
             Release();
-        // 이렇게하면 편하긴 한데
-        // 벡터는 구조체라서 복사되서 좀 별로 속도측면에서 좋지 않음.
+        }
     }
 
 
@@ -76,5 +79,5 @@ public class Enemy : MonoBehaviour, IPoolingObject
 
     private GameObject target = null;
     private EP_EnemyPatternBase[] patterns = null;
-
+    private AttackDelegate attackCallback = null;
 }

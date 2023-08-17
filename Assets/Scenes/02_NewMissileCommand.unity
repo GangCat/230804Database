@@ -749,6 +749,8 @@ MonoBehaviour:
   maxEnemyCount: 20
   innerCircleRad: 20
   outerCircleRad: 20
+  enemySpawnRate: 1
+  enemyPatters: []
 --- !u!4 &2016053343
 Transform:
   m_ObjectHideFlags: 0

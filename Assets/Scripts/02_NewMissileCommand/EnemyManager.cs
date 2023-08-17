@@ -46,9 +46,10 @@ public class EnemyManager : MonoBehaviour
         enemyPrefab = Resources.Load<GameObject>("Prefabs\\P_Enemy");
     }
 
-    public void Init(GameObject _target)
+    public void Init(GameObject _target, AttackDelegate _attackCallback = null)
     {
         target = _target;
+        attackCallback = _attackCallback;
 
         enemies = new IPoolingObject[maxEnemyCount];
 
@@ -95,7 +96,7 @@ public class EnemyManager : MonoBehaviour
                 {
                     enemy.SetPosition(ComputeRandomPosWithCircleRange(Vector3.zero));
                     enemy.AddPatterns();
-                    enemy.Init(target);
+                    enemy.Init(target, attackCallback);
                     break;
                 }
             }
@@ -106,23 +107,22 @@ public class EnemyManager : MonoBehaviour
 
 
     [SerializeField]
-    private int maxEnemyCount = 20;
+    private int     maxEnemyCount = 20;
     [SerializeField]
-    private int innerCircleRad = 20;
+    private int     innerCircleRad = 20;
     [SerializeField]
-    private int outerCircleRad = 20;
+    private int     outerCircleRad = 20;
     [SerializeField]
-    private float enemySpawnRate = 3f;
+    private float   enemySpawnRate = 3f;
 
     [SerializeField]
     private EP_EnemyPatternBase[] enemyPatters = null;
 
-    private GameObject enemyPrefab = null;
-
     private List<Enemy> enemyList = new List<Enemy>();
-
-    private GameObject target = null;
-
     private IPoolingObject[] enemies = null;
+
+    private GameObject enemyPrefab = null;
+    private GameObject target = null;
+    private AttackDelegate attackCallback = null;
 
 }

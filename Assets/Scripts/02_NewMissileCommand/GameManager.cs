@@ -6,13 +6,17 @@ public class GameManager : MonoBehaviour
 {
     public void HitCallback(List<IPoolingObject> _hitList)
     {
-        //enemyManager.RespawnEnemy(_hitList);
         enemyManager.SetDamages(_hitList);
 
         killedEnemyCount += _hitList.Count;
+    }
 
-        //foreach (Enemy enemy in _hitList)
-        //    Destroy(enemy.gameObject);
+    private void EnemyAttackCallback(int _dmg = 1)
+    {
+        if(tower.Damage(_dmg) == 0)
+        {
+            Debug.Log("GameOver");
+        }
     }
 
     private void Update()
@@ -38,13 +42,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        enemyManager.Init(tower.gameObject);
+        enemyManager.Init(tower.gameObject, EnemyAttackCallback);
     }
 
 
     [SerializeField]
     private EnemyManager enemyManager = null;
-    // mng, mgr·Îµµ ¾¸
 
     private int killedEnemyCount = 0;
 

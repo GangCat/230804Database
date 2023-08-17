@@ -12,6 +12,13 @@ public class Tower : MonoBehaviour
         attackCo = StartCoroutine(AttackCoroutine(_targetPos, _hitCallback));
     }
 
+    public int Damage(int _dmg = 1)
+    {
+        curHp -= _dmg;
+        return curHp;
+        // UI를 위해서, 죽었는지 확인을 위해서 반환
+    }
+
     private void Awake()
     {
         im = InputMouse.Instance;
@@ -27,6 +34,8 @@ public class Tower : MonoBehaviour
             missile.SetActive(false);
             missileList.Add(missile.GetComponent<Missile>());
         }
+
+        curHp = maxHp;
     }
 
     private void Update()
@@ -116,6 +125,7 @@ public class Tower : MonoBehaviour
         }
         return null;
     }
+    
 
 
     [SerializeField, Range(0.1f, 1f)]
@@ -124,6 +134,11 @@ public class Tower : MonoBehaviour
     private GameObject missilePrefab = null;
     [SerializeField]
     private int maxMissileCount = 3;
+
+    [SerializeField]
+    private int maxHp = 3;
+
+    private int curHp = 0;
 
     private InputMouse im = null;
     private MissileSpawnPoint missileSpawnPoint = null;
