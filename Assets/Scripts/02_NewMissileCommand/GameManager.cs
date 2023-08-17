@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
         if (curHp == 0)
         {
             Debug.Log("GameOver");
-            StopCoroutine("TimerCoroutine");
+            //StopCoroutine("TimerCoroutine");
         }
     }
 

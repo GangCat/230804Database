@@ -16,7 +16,21 @@ public class UI_HUD_HP_Heart : MonoBehaviour
 
     public void Empty()
     {
+        StartCoroutine("EmptyAnimCoroutine");
+        //fillGo.SetActive(false);
+    }
+
+    private IEnumerator EmptyAnimCoroutine()
+    {
+        while (fillGo.transform.localScale.x > 0.01f)
+        {
+            fillGo.transform.localScale = Vector3.Lerp(fillGo.transform.localScale, Vector3.zero, 0.05f);
+
+            yield return null;
+        }
+
         fillGo.SetActive(false);
+        fillGo.transform.localScale = Vector3.one;
     }
 
     [SerializeField]
