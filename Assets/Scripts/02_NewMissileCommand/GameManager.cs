@@ -6,17 +6,24 @@ public class GameManager : MonoBehaviour
 {
     public void HitCallback(List<IPoolingObject> _hitList)
     {
-        enemyManager.SetDamages(_hitList);
+        enemyMng.SetDamages(_hitList);
 
         killedEnemyCount += _hitList.Count;
     }
 
     private void EnemyAttackCallback(int _dmg = 1)
     {
-        if(tower.Damage(_dmg) == 0)
-        {
+        int curHp = tower.Damage(_dmg);
+        if (curHp < 0) return;
+
+        uiHudHp.UpdateHp(curHp);
+        if(curHp == 0)
             Debug.Log("GameOver");
-        }
+    }
+
+    private void MissileStateCallback(int _missileIdx, bool _isFill)
+    {
+        uiHudMissile.UpdateMissileStateWithIndex(_missileIdx, _isFill);
     }
 
     private void Update()
@@ -42,12 +49,19 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        enemyManager.Init(tower.gameObject, EnemyAttackCallback);
+        tower.Init(MissileStateCallback);
+        enemyMng.Init(tower.gameObject, EnemyAttackCallback);
+        uiHudHp.Init(tower.MaxHp);
+        uiHudMissile.Init(tower.MaxMissileCount);
     }
 
 
     [SerializeField]
-    private EnemyManager enemyManager = null;
+    private EnemyManager enemyMng = null;
+    [SerializeField]
+    private UI_HUD_HP uiHudHp = null;
+    [SerializeField]
+    private UI_HUD_Missile uiHudMissile = null;
 
     private int killedEnemyCount = 0;
 

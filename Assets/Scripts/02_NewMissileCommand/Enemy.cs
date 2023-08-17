@@ -11,7 +11,7 @@ public class Enemy : MonoBehaviour, IPoolingObject
 
     public void AddPatterns()
     {
-        gameObject.AddComponent<EP_MoveAround>();
+        //gameObject.AddComponent<EP_MoveAround>();
         gameObject.AddComponent<EP_RotateToTarget>();
     }
 

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Tower : MonoBehaviour
 {
+    public int MaxHp => maxHp;
+    public int MaxMissileCount => maxMissileCount;
     public void Attack(Vector3 _targetPos, voidListPoolingObjectDelegate _hitCallback = null)
     {
         if (attackCo != null)
@@ -25,17 +27,20 @@ public class Tower : MonoBehaviour
         missileSpawnPoint = GetComponentInChildren<MissileSpawnPoint>();
     }
 
-    private void Start()
+    public void Init(MissileStateDelegate _missileStateCallback)
     {
         for (int i = 0; i < maxMissileCount; ++i)
         {
-            GameObject missile = Instantiate(missilePrefab);
-            missile.name = "Missile_" + i.ToString("D2");
-            missile.SetActive(false);
-            missileList.Add(missile.GetComponent<Missile>());
-        }
+            GameObject missileGo = Instantiate(missilePrefab);
+            missileGo.name = "Missile_" + i.ToString("D2");
+            missileGo.SetActive(false);
 
+            Missile missile = missileGo.GetComponent<Missile>();
+            missile.SetNumber(i);
+            missileList.Add(missile);
+        }
         curHp = maxHp;
+        missileStateCallback = _missileStateCallback;
     }
 
     private void Update()
@@ -80,7 +85,7 @@ public class Tower : MonoBehaviour
         Missile missile = GetUsableMissile();
         if (missile != null)
         {
-            missile.Init(missileSpawnPoint.GetSpawnPoint(), missileSpawnPoint.GetRotation(), _targetPos, _hitCallback);
+            missile.Init(missileSpawnPoint.GetSpawnPoint(), missileSpawnPoint.GetRotation(), _targetPos, missileStateCallback, _hitCallback);
         }
     }
 
@@ -144,4 +149,6 @@ public class Tower : MonoBehaviour
     private MissileSpawnPoint missileSpawnPoint = null;
     private Coroutine attackCo = null;
     private List<Missile> missileList = new List<Missile>();
+
+    private MissileStateDelegate missileStateCallback = null;
 }
