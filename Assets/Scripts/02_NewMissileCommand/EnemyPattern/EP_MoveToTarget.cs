@@ -13,7 +13,7 @@ public class EP_MoveToTarget : EP_EnemyPatternBase
         // MoveToTarget √ ±‚»≠
         if (isRandomSpeed)
         {
-            moveSpeed = Random.Range(1f, 5f);
+            moveSpeed = Random.Range(5f, 10f);
         }
     }
 
@@ -27,6 +27,6 @@ public class EP_MoveToTarget : EP_EnemyPatternBase
 
     [SerializeField]
     private bool isRandomSpeed = true;
-    [SerializeField, Range(1f,5f)]
+    [SerializeField, Range(5f, 10f)]
     private float moveSpeed = 1f;
 }

@@ -8,7 +8,9 @@ public class GameManager : MonoBehaviour
     {
         enemyMng.SetDamages(_hitList);
 
-        killedEnemyCount += _hitList.Count;
+        killCnt += _hitList.Count;
+
+        uiHudKillCount.SetKillCount(killCnt);
     }
 
     private void EnemyAttackCallback(int _dmg = 1)
@@ -17,8 +19,11 @@ public class GameManager : MonoBehaviour
         if (curHp < 0) return;
 
         uiHudHp.UpdateHp(curHp);
-        if(curHp == 0)
+        if (curHp == 0)
+        {
             Debug.Log("GameOver");
+            StopCoroutine("TimerCoroutine");
+        }
     }
 
     private void MissileStateCallback(int _missileIdx, bool _isFill)
@@ -38,7 +43,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
-            Debug.Log(killedEnemyCount);
+            Debug.Log(killCnt);
     }
 
     private void Awake()
@@ -51,19 +56,39 @@ public class GameManager : MonoBehaviour
     {
         tower.Init(MissileStateCallback);
         enemyMng.Init(tower.gameObject, EnemyAttackCallback);
+
         uiHudHp.Init(tower.MaxHp);
         uiHudMissile.Init(tower.MaxMissileCount);
+        uiHudKillCount.SetKillCount(killCnt);
+
+        StartCoroutine("TimerCoroutine");
+    }
+
+    private IEnumerator TimerCoroutine()
+    {
+        while (true)
+        {
+            uiHudTimer.SetTime(timeSec);
+            yield return new WaitForSeconds(1f);
+            ++timeSec;
+        }
     }
 
 
     [SerializeField]
     private EnemyManager enemyMng = null;
+
     [SerializeField]
     private UI_HUD_HP uiHudHp = null;
     [SerializeField]
     private UI_HUD_Missile uiHudMissile = null;
+    [SerializeField]
+    private UI_HUD_KillCount uiHudKillCount = null;
+    [SerializeField]
+    private UI_HUD_Timer uiHudTimer = null;
 
-    private int killedEnemyCount = 0;
+    private int killCnt = 0;
+    private int timeSec = 0;
 
     private InputMouse inputMouse = null;
     private Tower tower = null;

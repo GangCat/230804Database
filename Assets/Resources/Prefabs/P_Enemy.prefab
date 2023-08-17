@@ -73,7 +73,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isRandomSpeed: 1
-  moveSpeed: 1
+  moveSpeed: 5
 --- !u!1 &2967767957641221933
 GameObject:
   m_ObjectHideFlags: 0
