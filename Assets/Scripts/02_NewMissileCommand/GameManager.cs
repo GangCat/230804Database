@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public enum EGameState { None = -1, Ready, Start, Play, GameOver, Rank }
+
+    public static bool IsPlaying() { return gameState == EGameState.Play; }
+    public static bool IsGameOver() { return gameState == EGameState.GameOver; }
+
     public void HitCallback(List<IPoolingObject> _hitList)
     {
-        enemyMgr.SetDamages(_hitList);
+        enemyMng.SetDamages(_hitList);
 
         killCnt += _hitList.Count;
 
-        uiMgr.UIHUDUpdateKillCount(killCnt);
-        //uiHudKillCount.SetKillCount(killCnt);
+        uiCanvasMng.UIHUDUpdateKillCount(killCnt);
+    }
+
+    public void RetryButtonCallback()
+    {
+        OnReadyProcess(false);
     }
 
     private void EnemyAttackCallback(int _dmg = 1)
@@ -19,28 +28,121 @@ public class GameManager : MonoBehaviour
         int curHp = tower.Damage(_dmg);
         if (curHp < 0) return;
 
-        uiMgr.UIHUDUpdateHp(curHp);
-        //uiHudHp.UpdateHp(curHp);
+        uiCanvasMng.UIHUDUpdateHp(curHp);
         if (curHp == 0)
         {
-            Debug.Log("GameOver");
-            //StopCoroutine("TimerCoroutine");
+            gameState = EGameState.GameOver;
+            uiCanvasMng.SetActiveHUD(false);
+            uiCanvasMng.SetActiveState(true);
+            uiCanvasMng.OnGameOver(killCnt, timeSec);
         }
     }
 
     private void MissileStateCallback(int _missileIdx, bool _isFill)
     {
-        uiMgr.UIHUDUpdateMissileStateWithIndex(_missileIdx, _isFill);
-        //uiHudMissile.UpdateMissileStateWithIndex(_missileIdx, _isFill);
+        uiCanvasMng.UIHUDUpdateMissileStateWithIndex(_missileIdx, _isFill);
+    }
+
+    private IEnumerator ReadyCoroutine(bool _isFirstPlay)
+    {
+        if (!_isFirstPlay)
+            Retry();
+
+        gameState = EGameState.Ready;
+        uiCanvasMng.SetActiveHUD(false);
+        uiCanvasMng.SetActiveState(true);
+
+        uiCanvasMng.OnReady();
+        yield return new WaitForSeconds(readyDelay);
+
+        gameState = EGameState.Start;
+        uiCanvasMng.OnStart();
+        yield return new WaitForSeconds(startDelay);
+
+        gameState = EGameState.Play;
+        uiCanvasMng.SetActiveHUD(true);
+        uiCanvasMng.SetActiveState(false);
+
+        if (_isFirstPlay) Init();
+
+        StartCoroutine("TimerCoroutine");
+    }
+
+    private void Init()
+    {
+        tower.Init(MissileStateCallback);
+        enemyMng.Init(tower.gameObject, EnemyAttackCallback);
+
+        uiCanvasMng.UIHUDInitHP(tower.MaxHp);
+        uiCanvasMng.UIHUDInitMissile(tower.MaxMissileCount);
+        uiCanvasMng.UIHUDInitKillCount();
+
+        uiCanvasMng.SetRetryButtonCallback(RetryButtonCallback);
+    }
+
+    private void Retry()
+    {
+        // 체력 리셋
+        // 미사일 리셋
+        tower.Retry();
+
+        // 적 모두 릴리즈
+        enemyMng.Retry();
+
+        // 시간 초기화
+        // 킬 카운트 초기화
+        killCnt = 0;
+        timeSec = 0;
+
+        uiCanvasMng.UIHUDFullHp();
+        uiCanvasMng.UIHUDReloadMissile();
+        uiCanvasMng.UIHUDInitKillCount();
+        uiCanvasMng.UIHUDUpdateTimer(timeSec);
+
+        StopCoroutine("TimerCoroutine");
+    }
+
+    private IEnumerator TimerCoroutine()
+    {
+        while (true)
+        {
+            uiCanvasMng.UIHUDUpdateTimer(timeSec);
+            yield return new WaitForSeconds(1f);
+            ++timeSec;
+        }
+    }
+
+    private void Awake()
+    {
+        tower = FindAnyObjectByType<Tower>();
+        inputMouse = InputMouse.Instance;
+        gameState = EGameState.Ready;
+    }
+
+    private void Start()
+    {
+        OnReadyProcess(true);
+    }
+
+
+
+    private void OnReadyProcess(bool _isFirstPlay)
+    {
+        StartCoroutine(ReadyCoroutine(_isFirstPlay));
     }
 
     private void Update()
     {
+        if (gameState != EGameState.Play) return;
+        // 이렇게 enum을 직접 비교하는거보다  뭐 isPlay같은 메소드 만드는게 더 좋다.
+        // if(!IsPlay) reutrn;
+
         if (Input.GetMouseButtonDown(0))
         {
             Vector3 point = Vector3.zero;
-            if(inputMouse.Picking("Stage", ref point))
+            if (inputMouse.Picking("Stage", ref point, 1 << LayerMask.NameToLayer("Stage")))
             {
+                if(Vector3.SqrMagnitude(tower.GetPosition() - point) > 2f)
                 tower.Attack(point, HitCallback);
             }
         }
@@ -49,56 +151,19 @@ public class GameManager : MonoBehaviour
             Debug.Log(killCnt);
     }
 
-    private void Awake()
-    {
-        tower = FindAnyObjectByType<Tower>();
-        inputMouse = InputMouse.Instance;
-    }
-
-    private void Start()
-    {
-        tower.Init(MissileStateCallback);
-        enemyMgr.Init(tower.gameObject, EnemyAttackCallback);
-
-        uiMgr.UIHUDInitHP(tower.MaxHp);
-        //uiHudHp.Init(tower.MaxHp);
-        uiMgr.UIHUDInitMissile(tower.MaxMissileCount);
-        //uiHudMissile.Init(tower.MaxMissileCount);
-        uiMgr.UIHUDInitKillCount();
-        //uiHudKillCount.SetKillCount(killCnt);
-
-        StartCoroutine("TimerCoroutine");
-    }
-
-    private IEnumerator TimerCoroutine()
-    {
-        while (true)
-        {
-            uiMgr.UIHUDUpdateTimer(timeSec);
-            //uiHudTimer.SetTime(timeSec);
-            yield return new WaitForSeconds(1f);
-            ++timeSec;
-        }
-    }
-
 
     [SerializeField]
-    private EnemyManager enemyMgr = null;
+    private EnemyManager enemyMng = null;
     [SerializeField]
-    private UIManager uiMgr = null;
-    
-
-    //[SerializeField]
-    //private UI_HUD_HP uiHudHp = null;
-    //[SerializeField]
-    //private UI_HUD_Missile uiHudMissile = null;
-    //[SerializeField]
-    //private UI_HUD_KillCount uiHudKillCount = null;
-    //[SerializeField]
-    //private UI_HUD_Timer uiHudTimer = null;
+    private UI_CanvasManager uiCanvasMng = null;
 
     private int killCnt = 0;
     private int timeSec = 0;
+
+    private float readyDelay = 1f;
+    private float startDelay = 1f;
+
+    private static EGameState gameState = EGameState.None;
 
     private InputMouse inputMouse = null;
     private Tower tower = null;

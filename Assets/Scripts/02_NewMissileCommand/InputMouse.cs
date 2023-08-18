@@ -21,13 +21,13 @@ public class InputMouse : MonoBehaviour
         }
     }
 
-    public bool Picking(string _tag, ref Vector3 _point)
+    public bool Picking(string _tag, ref Vector3 _point, int _layerMaskIdx = ~0)
     {
         Vector3 mousePos = Input.mousePosition;
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, 1000f, _layerMaskIdx))
         {
             if (hit.transform.CompareTag(_tag))
             {

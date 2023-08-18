@@ -33,7 +33,10 @@ public class UI_HUD_HP : MonoBehaviour
     public void FullHp()
     {
         foreach (UI_HUD_HP_Heart heart in listHeart)
+        {
             heart.Fill();
+            heart.ResetScale();
+        }
     }
 
 

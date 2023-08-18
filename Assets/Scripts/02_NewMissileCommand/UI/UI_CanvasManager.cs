@@ -3,8 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UI_CanvasManager : MonoBehaviour
 {
+    public enum ECanvasType { None = -1, HUD, State }
+
+    #region HUD
+    public void SetActiveHUD(bool _active)
+    {
+        uiHudCanvas.SetActive(_active);
+    }
+
+
     public void UIHUDInitHP(int _maxHp)
     {
         uiHudCanvas.InitHp(_maxHp);
@@ -19,6 +28,7 @@ public class UIManager : MonoBehaviour
     {
         uiHudCanvas.InitKillCount();
     }
+
 
     public void UIHUDUpdateHp(int _curHp)
     {
@@ -39,6 +49,50 @@ public class UIManager : MonoBehaviour
     {
         uiHudCanvas.UpdateTimer(_sec);
     }
+
+
+    public void UIHUDFullHp()
+    {
+        uiHudCanvas.FullHp();
+    }
+
+    public void UIHUDReloadMissile()
+    {
+        uiHudCanvas.ReloadMissile();
+    }
+    #endregion
+
+    #region State
+    public void SetActiveState(bool _active)
+    {
+        uiStateCanvas.SetActive(_active);
+    }
+
+
+    public void OnReady()
+    {
+        uiStateCanvas.OnReady();
+    }
+
+    public void OnStart()
+    {
+        uiStateCanvas.OnStart();
+    }
+
+    public void OnGameOver(int _killCnt, int _timeSec)
+    {
+        uiStateCanvas.OnGameOver(_killCnt, _timeSec);
+    }
+
+
+    public void SetRetryButtonCallback(VoidVoidDelegate _callback)
+    {
+        uiStateCanvas.SetRetryButtonCallback(_callback);
+    }
+    #endregion
+
+
+
 
 
 

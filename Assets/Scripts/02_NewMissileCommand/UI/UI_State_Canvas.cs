@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class UI_State_Canvas : MonoBehaviour
 {
-    public enum EState { Ready, Start, GameOver }
+    public enum EState { None = -1, Ready, Start, GameOver }
 
-    public void SetActive(bool _isActive)
+    public void SetActive(bool _active)
     {
-        gameObject.SetActive(_isActive);
+        gameObject.SetActive(_active);
     }
 
     // 나중에 해당 타이밍에 효과음을 넣거나 등등 할 수 있기 때문에 미리 만들어둠.
@@ -26,6 +26,11 @@ public class UI_State_Canvas : MonoBehaviour
     {
         gameOver.SetInfo(_killCnt, _time);
         UpdateVIsible(EState.GameOver);
+    }
+
+    public void SetRetryButtonCallback(VoidVoidDelegate _callback)
+    {
+        gameOver.SetRetryButtonCallback(_callback);
     }
 
     private void UpdateVIsible(EState _state)

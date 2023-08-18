@@ -21,6 +21,11 @@ public class Tower : MonoBehaviour
         // UI를 위해서, 죽었는지 확인을 위해서 반환
     }
 
+    public Vector3 GetPosition()
+    {
+        return transform.position;
+    }
+
     private void Awake()
     {
         im = InputMouse.Instance;
@@ -37,10 +42,20 @@ public class Tower : MonoBehaviour
 
             Missile missile = missileGo.GetComponent<Missile>();
             missile.SetNumber(i);
-            missileList.Add(missile);
+            listMissile.Add(missile);
         }
         curHp = maxHp;
         missileStateCallback = _missileStateCallback;
+    }
+
+    public void Retry()
+    {
+        foreach (Missile missile in listMissile)
+            missile.gameObject.SetActive(false);
+
+        transform.rotation = Quaternion.identity;
+
+        curHp = maxHp;
     }
 
     private void Update()
@@ -73,6 +88,9 @@ public class Tower : MonoBehaviour
 
         while (t < 1f)
         {
+            if (!GameManager.IsPlaying())
+                StopAllCoroutines();
+
             float angle = Mathf.Lerp(towerAngle, targetAngle, t);
             RotateYaw(transform, angle);
 
@@ -110,20 +128,20 @@ public class Tower : MonoBehaviour
         _tr.rotation = Quaternion.Euler(0f, -_angle + 90f, 0f);
     }
 
-    private void PickingSample()
-    {
-        Vector3 point = Vector3.zero;
-        if (im.Picking("Stage", ref point))
-        {
-            float theta = CalcAngleToTarget(transform.position, point);
+    //private void PickingSample()
+    //{
+    //    Vector3 point = Vector3.zero;
+    //    if (im.Picking("Stage", ref point))
+    //    {
+    //        float theta = CalcAngleToTarget(transform.position, point);
 
-            transform.rotation = Quaternion.Euler(0f, -theta + 90, 0f);
-        }
-    }
+    //        transform.rotation = Quaternion.Euler(0f, -theta + 90, 0f);
+    //    }
+    //}
 
     private Missile GetUsableMissile()
     {
-        foreach (Missile missile in missileList)
+        foreach (Missile missile in listMissile)
         {
             if (!missile.gameObject.activeSelf)
                 return missile;
@@ -148,7 +166,7 @@ public class Tower : MonoBehaviour
     private InputMouse im = null;
     private MissileSpawnPoint missileSpawnPoint = null;
     private Coroutine attackCo = null;
-    private List<Missile> missileList = new List<Missile>();
+    private List<Missile> listMissile = new List<Missile>();
 
     private MissileStateDelegate missileStateCallback = null;
 }

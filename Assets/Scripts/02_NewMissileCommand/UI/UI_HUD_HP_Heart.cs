@@ -17,7 +17,11 @@ public class UI_HUD_HP_Heart : MonoBehaviour
     public void Empty()
     {
         StartCoroutine("EmptyAnimCoroutine");
-        //fillGo.SetActive(false);
+    }
+
+    public void ResetScale()
+    {
+        fillGo.transform.localScale = Vector3.one;
     }
 
     private IEnumerator EmptyAnimCoroutine()

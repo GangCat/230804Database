@@ -50,11 +50,12 @@ public class Missile : MonoBehaviour
     private void OnDisable()
     {
         missileStateCallback?.Invoke(number, true);
+        explosion.Init();
     }
 
     private void Update()
     {
-        if (!isInit) return;
+        if (!GameManager.IsPlaying() || !isInit) return;
 
         transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
 

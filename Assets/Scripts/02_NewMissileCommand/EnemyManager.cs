@@ -23,7 +23,7 @@ public class EnemyManager : MonoBehaviour
     // 가공도 안되고 속도도 빠르기 때문
     public void SetDamages(List<IPoolingObject> _hitList)
     {
-        foreach (IPoolingObject enemy in enemies)
+        foreach (IPoolingObject enemy in arrayEnemy)
         {
             foreach(IPoolingObject hitEnemy in _hitList)
             {
@@ -40,28 +40,37 @@ public class EnemyManager : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        enemyPrefab = Resources.Load<GameObject>("Prefabs\\P_Enemy");
-    }
+
 
     public void Init(GameObject _target, AttackDelegate _attackCallback = null)
     {
         target = _target;
         attackCallback = _attackCallback;
 
-        enemies = new IPoolingObject[maxEnemyCount];
+        arrayEnemy = new IPoolingObject[maxEnemyCount];
 
         for(int i = 0; i < maxEnemyCount; ++i)
         {
             GameObject go = Instantiate(enemyPrefab, ComputeRandomPosWithCircleRange(Vector3.zero), Quaternion.identity, transform);
             go.name = "Enemy_" + i;
 
-            enemies[i] = go.GetComponent<IPoolingObject>();
-            ((Enemy)enemies[i]).Release();
+            arrayEnemy[i] = go.GetComponent<IPoolingObject>();
+            ((Enemy)arrayEnemy[i]).Release();
         }
 
         StartCoroutine(RespawnCoroutine());
+    }
+
+    public void Retry()
+    {
+        foreach (Enemy enemy in arrayEnemy)
+            enemy.Release();
+    }
+
+
+    private void Awake()
+    {
+        enemyPrefab = Resources.Load<GameObject>("Prefabs\\P_Enemy");
     }
 
     private Vector3 RandomPosition()
@@ -89,14 +98,17 @@ public class EnemyManager : MonoBehaviour
     {
         while (true)
         {
-            foreach(Enemy enemy in enemies)
+            if(GameManager.IsPlaying())
             {
-                if (!enemy.isAlive())
+                foreach (Enemy enemy in arrayEnemy)
                 {
-                    enemy.SetPosition(ComputeRandomPosWithCircleRange(Vector3.zero));
-                    enemy.AddPatterns();
-                    enemy.Init(target, attackCallback);
-                    break;
+                    if (!enemy.isAlive())
+                    {
+                        enemy.SetPosition(ComputeRandomPosWithCircleRange(Vector3.zero));
+                        enemy.AddPatterns();
+                        enemy.Init(target, attackCallback);
+                        break;
+                    }
                 }
             }
 
@@ -118,7 +130,7 @@ public class EnemyManager : MonoBehaviour
     private EP_EnemyPatternBase[] enemyPatters = null;
 
     private List<Enemy> enemyList = new List<Enemy>();
-    private IPoolingObject[] enemies = null;
+    private IPoolingObject[] arrayEnemy = null;
 
     private GameObject enemyPrefab = null;
     private GameObject target = null;

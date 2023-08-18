@@ -47,7 +47,7 @@ public class Enemy : MonoBehaviour, IPoolingObject
 
     private void Update()
     {
-        if (!target) return;
+        if (!GameManager.IsPlaying() || !target) return;
 
         Vector3 anchorPos = Vector3.zero;
         foreach (EP_EnemyPatternBase pattern in patterns)

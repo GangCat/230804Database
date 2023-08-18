@@ -13,6 +13,11 @@ public class Explosion : MonoBehaviour
         StartCoroutine(ActivateCoroutine(_finishCallback, _hitEnemyListCallback));
     }
 
+    public void Init()
+    {
+        transform.localScale = Vector3.zero;
+    }
+
     private Explosion()
     {
         maxScale = 10f;
@@ -28,6 +33,9 @@ public class Explosion : MonoBehaviour
 
         while (t < 1f)
         {
+            if (!GameManager.IsPlaying())
+                StopAllCoroutines();
+
             transform.localScale = Vector3.Lerp(from, to, t);
             t += Time.deltaTime * speed;
             yield return null;

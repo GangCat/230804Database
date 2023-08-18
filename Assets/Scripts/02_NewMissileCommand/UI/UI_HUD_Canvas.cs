@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class UI_HUD_Canvas : MonoBehaviour
 {
-    public void SetActive(bool _isActive)
+    public void SetActive(bool _active)
     {
-        gameObject.SetActive(_isActive);
+        gameObject.SetActive(_active);
     }
     #region InitUI
     public void InitHp(int _maxHp)
@@ -46,6 +46,16 @@ public class UI_HUD_Canvas : MonoBehaviour
         uiHudTimer.SetTime(_sec);
     }
     #endregion
+
+    public void FullHp()
+    {
+        uiHudHp.FullHp();
+    }
+
+    public void ReloadMissile()
+    {
+        uiHudMissile.ReloadAll();
+    }
 
 
     [SerializeField]
