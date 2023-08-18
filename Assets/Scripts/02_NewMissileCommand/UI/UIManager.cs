@@ -7,47 +7,47 @@ public class UIManager : MonoBehaviour
 {
     public void UIHUDInitHP(int _maxHp)
     {
-        uiHudMgr.InitHp(_maxHp);
+        uiHudCanvas.InitHp(_maxHp);
     }
 
     public void UIHUDInitMissile(int _maxMissileCnt)
     {
-        uiHudMgr.InitMissile(_maxMissileCnt);
+        uiHudCanvas.InitMissile(_maxMissileCnt);
     }
 
     public void UIHUDInitKillCount()
     {
-        uiHudMgr.InitKillCount();
+        uiHudCanvas.InitKillCount();
     }
-
-
 
     public void UIHUDUpdateHp(int _curHp)
     {
-        uiHudMgr.UpdateHp(_curHp);
+        uiHudCanvas.UpdateHp(_curHp);
     }
 
     public void UIHUDUpdateMissileStateWithIndex(int _index, bool _isFill)
     {
-        uiHudMgr.UpdateMissile(_index, _isFill);
+        uiHudCanvas.UpdateMissile(_index, _isFill);
     }
 
     public void UIHUDUpdateKillCount(int _count)
     {
-        uiHudMgr.UpdateKillCount(_count);
+        uiHudCanvas.UpdateKillCount(_count);
     }
 
     public void UIHUDUpdateTimer(int _sec)
     {
-        uiHudMgr.UpdateTimer(_sec);
+        uiHudCanvas.UpdateTimer(_sec);
     }
 
 
 
     private void Awake()
     {
-        uiHudMgr = GetComponentInChildren<UI_HUDManager>();
+        uiHudCanvas = GetComponentInChildren<UI_HUD_Canvas>();
+        uiStateCanvas = GetComponentInChildren<UI_State_Canvas>();
     }
 
-    private UI_HUDManager uiHudMgr = null;
+    private UI_HUD_Canvas uiHudCanvas = null;
+    private UI_State_Canvas uiStateCanvas = null;
 }

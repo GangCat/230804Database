@@ -2,8 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UI_HUDManager : MonoBehaviour
+public class UI_HUD_Canvas : MonoBehaviour
 {
+    public void SetActive(bool _isActive)
+    {
+        gameObject.SetActive(_isActive);
+    }
+    #region InitUI
     public void InitHp(int _maxHp)
     {
         uiHudHp.Init(_maxHp);
@@ -18,7 +23,9 @@ public class UI_HUDManager : MonoBehaviour
     {
         uiHudKillCount.SetKillCount(0);
     }
+    #endregion
 
+    #region UpdateUI
     public void UpdateHp(int _curHp)
     {
         uiHudHp.UpdateHp(_curHp);
@@ -38,6 +45,7 @@ public class UI_HUDManager : MonoBehaviour
     {
         uiHudTimer.SetTime(_sec);
     }
+    #endregion
 
 
     [SerializeField]
