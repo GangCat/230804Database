@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class UI_Rank_Canvas : MonoBehaviour
 {
-    public void SetActive(bool _isActive)
+    public void SetActive(bool _isActive, int _score = 0, VoidVoidDelegate _enterCallback = null)
     {
         gameObject.SetActive(_isActive);
+        uiRankEnterName.SetScore(_score);
+        ShowEnterName(_enterCallback);
     }
 
-    public void ShowEnterName()
+    public void ShowEnterName(VoidVoidDelegate _enterCallback)
     {
-        uiRankEnterName.SetActive(true);
+        uiRankEnterName.SetActive(true, _enterCallback);
     }
 
     public void ShowRanking()

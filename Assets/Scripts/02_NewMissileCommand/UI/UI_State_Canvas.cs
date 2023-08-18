@@ -22,15 +22,20 @@ public class UI_State_Canvas : MonoBehaviour
         UpdateVIsible(EState.Start);
     }
 
-    public void OnGameOver(int _killCnt, int _time)
+    public void OnGameOver(int _killCnt, int _time, int _score)
     {
-        gameOver.SetInfo(_killCnt, _time);
+        gameOver.SetInfo(_killCnt, _time, _score);
         UpdateVIsible(EState.GameOver);
     }
 
     public void SetRetryButtonCallback(VoidVoidDelegate _callback)
     {
         gameOver.SetRetryButtonCallback(_callback);
+    }
+
+    public void SetRankButtonCallback(VoidVoidDelegate _callback)
+    {
+        gameOver.SetRankButtonCallback(_callback);
     }
 
     private void UpdateVIsible(EState _state)

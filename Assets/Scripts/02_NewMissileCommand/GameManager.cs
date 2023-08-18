@@ -8,7 +8,8 @@ public class GameManager : MonoBehaviour
 
     public static bool IsPlaying() { return gameState == EGameState.Play; }
     public static bool IsGameOver() { return gameState == EGameState.GameOver; }
-
+    
+    #region Callback
     public void HitCallback(List<IPoolingObject> _hitList)
     {
         enemyMng.SetDamages(_hitList);
@@ -23,6 +24,19 @@ public class GameManager : MonoBehaviour
         OnReadyProcess(false);
     }
 
+    public void RankButtonCallback()
+    {
+        uiCanvasMng.SetActiveHUD(false);
+        uiCanvasMng.SetActiveState(false);
+        uiCanvasMng.SetActiveRank(true, score, RankEnterCallback);
+    }
+
+    public void RankEnterCallback()
+    {
+        RetryButtonCallback();
+    }
+
+
     private void EnemyAttackCallback(int _dmg = 1)
     {
         int curHp = tower.Damage(_dmg);
@@ -34,13 +48,19 @@ public class GameManager : MonoBehaviour
             gameState = EGameState.GameOver;
             uiCanvasMng.SetActiveHUD(false);
             uiCanvasMng.SetActiveState(true);
-            uiCanvasMng.OnGameOver(killCnt, timeSec);
+            uiCanvasMng.OnGameOver(killCnt, timeSec, CalcScore(killCnt, timeSec));
         }
     }
 
     private void MissileStateCallback(int _missileIdx, bool _isFill)
     {
         uiCanvasMng.UIHUDUpdateMissileStateWithIndex(_missileIdx, _isFill);
+    }
+    #endregion
+
+    private int CalcScore(int _killCnt, int _timeSec)
+    {
+        return score = _killCnt * 1000 + _timeSec * 500;
     }
 
     private IEnumerator ReadyCoroutine(bool _isFirstPlay)
@@ -51,6 +71,7 @@ public class GameManager : MonoBehaviour
         gameState = EGameState.Ready;
         uiCanvasMng.SetActiveHUD(false);
         uiCanvasMng.SetActiveState(true);
+        uiCanvasMng.SetActiveRank(false);
 
         uiCanvasMng.OnReady();
         yield return new WaitForSeconds(readyDelay);
@@ -78,6 +99,7 @@ public class GameManager : MonoBehaviour
         uiCanvasMng.UIHUDInitKillCount();
 
         uiCanvasMng.SetRetryButtonCallback(RetryButtonCallback);
+        uiCanvasMng.SetRankButtonCallback(RankButtonCallback);
     }
 
     private void Retry()
@@ -93,6 +115,7 @@ public class GameManager : MonoBehaviour
         // 킬 카운트 초기화
         killCnt = 0;
         timeSec = 0;
+        score = 0;
 
         uiCanvasMng.UIHUDFullHp();
         uiCanvasMng.UIHUDReloadMissile();
@@ -123,8 +146,6 @@ public class GameManager : MonoBehaviour
     {
         OnReadyProcess(true);
     }
-
-
 
     private void OnReadyProcess(bool _isFirstPlay)
     {
@@ -159,6 +180,7 @@ public class GameManager : MonoBehaviour
 
     private int killCnt = 0;
     private int timeSec = 0;
+    private int score = 0;
 
     private float readyDelay = 1f;
     private float startDelay = 1f;

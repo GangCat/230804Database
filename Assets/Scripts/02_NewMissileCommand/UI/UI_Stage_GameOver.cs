@@ -12,7 +12,7 @@ public class UI_Stage_GameOver : MonoBehaviour
         gameObject.SetActive(_isActive);
     }
 
-    public void SetInfo(int _killCnt, int _time)
+    public void SetInfo(int _killCnt, int _time, int _score)
     {
         //StringBuilder sb = null;
         //sb.AppendLine(_killCnt.ToString());
@@ -24,7 +24,7 @@ public class UI_Stage_GameOver : MonoBehaviour
         int sec = _time % 60;
 
         // $나 @를 맨 앞에 넣기도 하는데 유니코드를 쓸건지 ASCII코드를 쓸건지 이런거 
-        scoreText.text = string.Format("{0}\n{1:D2}:{2:D2}", _killCnt, min, sec);
+        textScore.text = string.Format("{0}\n{1:D2}:{2:D2}\n{3:N0}", _killCnt, min, sec, _score);
     }
 
     public void SetRetryButtonCallback(VoidVoidDelegate _retryCallback)
@@ -44,10 +44,22 @@ public class UI_Stage_GameOver : MonoBehaviour
             );
     }
 
+    public void SetRankButtonCallback(VoidVoidDelegate _rankCallback)
+    {
+        btnRank.onClick.AddListener(
+            () =>
+            {
+                _rankCallback?.Invoke();
+            }
+            );
+    }
+
     [SerializeField]
-    private TMP_Text scoreText = null;
+    private TMP_Text textScore = null;
     [SerializeField]
     private Button btnRetry = null;
+    [SerializeField]
+    private Button btnRank = null;
 
     
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class UI_CanvasManager : MonoBehaviour
 {
-    public enum ECanvasType { None = -1, HUD, State }
+    public enum ECanvasType { None = -1, HUD, State, Rank }
 
     #region HUD
     public void SetActiveHUD(bool _active)
@@ -79,9 +79,9 @@ public class UI_CanvasManager : MonoBehaviour
         uiStateCanvas.OnStart();
     }
 
-    public void OnGameOver(int _killCnt, int _timeSec)
+    public void OnGameOver(int _killCnt, int _timeSec, int _score)
     {
-        uiStateCanvas.OnGameOver(_killCnt, _timeSec);
+        uiStateCanvas.OnGameOver(_killCnt, _timeSec, _score);
     }
 
 
@@ -89,19 +89,30 @@ public class UI_CanvasManager : MonoBehaviour
     {
         uiStateCanvas.SetRetryButtonCallback(_callback);
     }
+
+    public void SetRankButtonCallback(VoidVoidDelegate _callback)
+    {
+        uiStateCanvas.SetRankButtonCallback(_callback);
+    }
     #endregion
 
+    #region Rank
 
-
-
-
-
-    private void Awake()
+    public void SetActiveRank(bool _active, int _score = 0, VoidVoidDelegate _enterCallback = null)
     {
-        uiHudCanvas = GetComponentInChildren<UI_HUD_Canvas>();
-        uiStateCanvas = GetComponentInChildren<UI_State_Canvas>();
+        uiRankCanvas.SetActive(_active, _score, _enterCallback);
     }
 
+
+
+    #endregion
+
+    [SerializeField]
     private UI_HUD_Canvas uiHudCanvas = null;
+    [SerializeField]
     private UI_State_Canvas uiStateCanvas = null;
+    [SerializeField]
+    private UI_Rank_Canvas uiRankCanvas = null;
+
+
 }
